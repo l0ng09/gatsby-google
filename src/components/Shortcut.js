@@ -1,8 +1,9 @@
-import { Spacer, Image, VStack, useDisclosure } from "@chakra-ui/react"
-import React, { useEffect } from "react"
+import { Image, VStack, useDisclosure } from "@chakra-ui/react"
+import React, { useState } from "react"
 import styled from "@emotion/styled"
 import { AddIcon } from "@chakra-ui/icons"
 import BookmarkModal from "./BookmarkModal"
+import { useSelector } from "react-redux"
 
 const Box = styled.div`
   width: 540px;
@@ -35,11 +36,11 @@ const Webname = styled.div`
   text-overflow: ellipsis;
 `
 
-const BookMark = ({ name, url }) => {
+const BookMark = ({ name, url, onClick }) => {
   const iconUrl = `${url}/favicon.ico`
   return (
     <VStack>
-      <Circle>
+      <Circle onClick={onClick}>
         <Image boxSize="30px" src={iconUrl} />
       </Circle>
       <Webname maxW color="gray.500" fontSize="10px">
@@ -49,31 +50,36 @@ const BookMark = ({ name, url }) => {
   )
 }
 
+const initialValues = { name: "", url: "" }
+
 const Shortcut = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const list = [
-    {
-      name: "百度",
-      url: "https://www.baidu.com",
-    },
-    {
-      name: "腾讯云",
-      url: "https://cloud.tencent.com/",
-    },
-    {
-      name: "极光推荐",
-      url: "https://www.jiguang.cn/",
-    },
-  ]
+  const [value, setValue] = useState(initialValues)
+  const list = useSelector(state => state.bookmark.list)
+
+  const handleClick = value => {
+    onOpen()
+    setValue(value)
+  }
+  const handleColse = () => {
+    onClose()
+    setValue(initialValues)
+  }
+
   return (
     <Box w="580px" h="200px">
       {list.map(item => (
-        <BookMark name={item.name} url={item.url} key={item.url} />
+        <BookMark
+          onClick={() => handleClick(item)}
+          name={item.name}
+          url={item.url}
+          key={item.id}
+        />
       ))}
       <Circle onClick={onOpen}>
         <AddIcon />
       </Circle>
-      <BookmarkModal isOpen={isOpen} onClose={onClose} />
+      <BookmarkModal isOpen={isOpen} onClose={handleColse} value={value} />
     </Box>
   )
 }
