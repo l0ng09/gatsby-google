@@ -12,6 +12,11 @@ const initialState = {
       name: "腾讯云",
       url: "https://cloud.tencent.com/",
     },
+    {
+      id: 3,
+      name: "github",
+      url: "https://github.com/",
+    },
   ],
 }
 
@@ -21,7 +26,7 @@ const generateId = start => {
     return ++id
   }
 }
-const getId = generateId(2)
+const getId = generateId(initialState.length)
 
 export const bookmarkSlice = createSlice({
   name: "bookmark",

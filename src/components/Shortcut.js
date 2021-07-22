@@ -4,6 +4,7 @@ import styled from "@emotion/styled"
 import { AddIcon } from "@chakra-ui/icons"
 import BookmarkModal from "./BookmarkModal"
 import { useSelector } from "react-redux"
+import { InfoOutlineIcon } from "@chakra-ui/icons"
 
 const Box = styled.div`
   width: 540px;
@@ -36,12 +37,23 @@ const Webname = styled.div`
   text-overflow: ellipsis;
 `
 
+// 根据 url 解析出 icon 的路径
+const getIconByUrl = url => {
+  const reg = /(http|https):\/\/(www.)?(\w+(\.)?)+/
+  const result = url.match(reg)
+  return result ? `${result[0]}/favicon.ico` : null 
+}
+
 const BookMark = ({ name, url, onClick }) => {
-  const iconUrl = `${url}/favicon.ico`
+  const iconUrl = getIconByUrl(url)
   return (
     <VStack>
       <Circle onClick={onClick}>
-        <Image boxSize="30px" src={iconUrl} />
+        {iconUrl ? (
+          <Image boxSize="30px" src={iconUrl} />
+        ) : (
+          <InfoOutlineIcon color="gray.500" fontSize="28px" />
+        )}
       </Circle>
       <Webname maxW color="gray.500" fontSize="10px">
         {name}
